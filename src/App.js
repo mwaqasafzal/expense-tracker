@@ -1,24 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import CurrentBal from './CurrentBal'
+import IncExp from './IncExp'
+import TransactionHistory from './TransactionHistory'
+import NewTransaction from './NewTransaction'
 
 function App() {
+  const [transactions, setTransactions] = useState([]);
+  const [totalInc, setTotalInc] = useState(0.0);
+  const [totalExp, setTotalExp] = useState(0.0);
+
+  const addTransaction = (transaction) => {
+    const { amount } = transaction;
+    if (amount < 0)
+      setTotalExp(totalExp + amount);
+    else
+      setTotalInc(totalInc + amount);
+
+    setTransactions(transactions.concat(transaction));
+  }
+
+
   return (
+
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1 className="center">Expense Tracker</h1>
+      <CurrentBal totalBalance={totalExp + totalInc} />
+      <IncExp income={totalInc} expense={Math.abs(totalExp)} />
+      <TransactionHistory transactions={transactions} />
+      <NewTransaction addTransaction={addTransaction} />
     </div>
   );
 }
